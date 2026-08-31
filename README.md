@@ -13,13 +13,6 @@ Hyperspectral images contain hundreds of strongly correlated spectral bands and 
 1. **Offline rate-distortion pretraining.** Adjacent spectral bands are divided into groups and encoded sequentially. Each band is conditioned on features from previously reconstructed bands, allowing the codec to exploit inter-band dependencies. A hyperprior entropy model and learnable QP-dependent rate-control vectors provide practical compression and variable-rate operation.
 2. **Semantic-guided online adaptation.** For each target image, only the encoder is fine-tuned while the decoder remains fixed. Multi-layer HyperFree feature consistency between the original and reconstructed hyperspectral images provides task-agnostic semantic supervision without downstream labels or extra model-transmission cost.
 
-The corresponding objectives are:
-
-```text
-L_offline = R + lambda * D_MSE(X, X_hat)
-L_online  = alpha * R + beta * sum_l ||phi_l(X_hat) - phi_l(X)||_2^2
-```
-
 This repository contains the online encoder-adaptation and entropy-coded inference paths used for the paper experiments. The offline-pretrained codec is provided as an external checkpoint.
 
 ## Main results
@@ -150,11 +143,13 @@ For each QP, `<output-dir>/<input-stem>/` contains the reconstructed array, `met
 If you use this repository, please cite HyperICM:
 
 ```bibtex
-@misc{xu2026hypericm,
-  title  = {{HyperICM}: Hyperspectral Image Compression for Machines with Task-Agnostic Semantics from Foundation Models},
-  author = {Xu, Jiayao and Chen, Yujie and Li, Dingquan and Yang, Wenhan},
-  year   = {2026},
-  note   = {Manuscript}
+@inproceedings{xu2026hypericm,
+  title={Hypericm: Hyperspectral Image Compression for Machines with Task-Agnostic Semantics from Foundation Models},
+  author={Xu, Jiayao and Chen, Yujie and Li, Dingquan and Yang, Wenhan},
+  booktitle={2026 IEEE International Conference on Image Processing (ICIP)},
+  pages={1--6},
+  year={2026},
+  organization={IEEE}
 }
 ```
 
@@ -172,8 +167,3 @@ HyperICM uses [HyperFree](https://doi.org/10.1109/CVPR52734.2025.02146) as its t
 }
 ```
 
-## Acknowledgments and third-party notices
-
-The downstream foundation model is based on the official [HyperFree project](https://github.com/Jingtao-Li-CVer/HyperFree). This repository does not currently grant a repository-wide license; verify and preserve all applicable upstream licenses before redistribution.
-
-This work was supported in part by the Major Key Project of PCL (`PCL2024A04`), the Interdisciplinary Frontier Research Project of PCL (`PCL2025QYB013`), and the Guangdong Basic and Applied Basic Research Foundation (`2024A1515010454`).
