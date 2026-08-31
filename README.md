@@ -1,4 +1,4 @@
-# HyperICM release (A+2)
+# HyperICM 
 
 This directory is the portable release of the HyperICM paper project. It uses
 the user-supplied attachment for online encoder adaptation (choice A) and the
