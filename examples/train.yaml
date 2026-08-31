@@ -1,0 +1,26 @@
+# Copy/edit the paths below before starting a run.
+dataset: WHU-Hi-LongKou
+patch_dir: ../../data/patches/WHU-Hi-LongKou
+base_checkpoint: ../checkpoints/Ep10-dev0.076-0.000870-qprandom.pth
+hyperfree_checkpoint: ../checkpoints/HyperFree-b.pth
+output_dir: ../outputs/online_adaptation
+
+device: cuda:0
+hyperfree_device: cuda:0
+data_parallel_devices: null
+batch_size: 1
+qp: 21
+epochs: 100
+learning_rate: 1.0e-4
+loss_weights: [0.5, 0.06, 5.0, 10.0]
+seed: 28
+save_every: 1
+
+# Set these fields to enable periodic full-image evaluation.
+full_image: null
+ground_truth: null
+eval_every: 10
+run_downstream: false
+feature_index: 1
+pred_iou_thresh: 0.2
+stability_score_thresh: 0.3

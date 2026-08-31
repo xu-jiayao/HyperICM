@@ -1,0 +1,28 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+
+# Large external artifacts and local data/results.
+*.pth
+*.pt
+*.ckpt
+*.safetensors
+*.onnx
+outputs/
+results/
+logs/
+tensorboard/
+*.tif
+*.tiff
+*.npy
+*.npz
+*.mat
+*.h5
+*.hdf5
+*.csv
+
+# Local secrets.
+.env
+.env.*
+!.env.example
