@@ -13,28 +13,6 @@ Hyperspectral images contain hundreds of strongly correlated spectral bands and 
 1. **Offline rate-distortion pretraining.** Adjacent spectral bands are divided into groups and encoded sequentially. Each band is conditioned on features from previously reconstructed bands, allowing the codec to exploit inter-band dependencies. A hyperprior entropy model and learnable QP-dependent rate-control vectors provide practical compression and variable-rate operation.
 2. **Semantic-guided online adaptation.** For each target image, only the encoder is fine-tuned while the decoder remains fixed. Multi-layer HyperFree feature consistency between the original and reconstructed hyperspectral images provides task-agnostic semantic supervision without downstream labels or extra model-transmission cost.
 
-## Main results
-
-The paper evaluates HyperICM on three WHU-Hi datasets over approximately 0.005–0.04 bits per spectral pixel (BPSP). Relative to JPEG 2000, semantic-guided online adaptation achieves the following OA-oriented BD-Rate reductions:
-
-| Dataset | Bands | BD-Rate (OA) ↓ | BD-OA ↑ |
-| --- | ---: | ---: | ---: |
-| WHU-Hi-LongKou | 270 | **−75.207%** | **0.175** |
-| WHU-Hi-HongHu | 270 | **−72.090%** | **0.277** |
-| WHU-Hi-HanChuan | 274 | **−46.550%** | **0.118** |
-
-The evaluation includes JPEG 2000, HEVC, VVC, and LoR-SGS baselines. Visual quality is measured with PSNR, while machine performance is measured by HyperFree semantic-segmentation overall accuracy (OA).
-
-In the paper protocol, online adaptation uses `256 × 256` patches, a learning rate of `1e-5` for LongKou/HongHu and `5e-5` for HanChuan, and 100/30/30 epochs for LongKou/HongHu/HanChuan, respectively. The dataset- and rate-specific settings are:
-
-| Target BPSP | LongKou `[QP, alpha, beta]` | HongHu `[QP, alpha, beta]` | HanChuan `[QP, alpha, beta]` |
-| ---: | --- | --- | --- |
-| 0.005 | `[1, 4.8, 50]` | `[1, 0.5, 10]` | `[2, 1, 50]` |
-| 0.010 | `[2, 6, 50]` | `[1, 10^3, 10]` | `[2, 4.7, 50]` |
-| 0.020 | `[5, 15, 50]` | `[5, 5, 20]` | `[6, 33, 50]` |
-| 0.030 | `[9, 29, 50]` | `[9, 10, 20]` | `[15, 33, 50]` |
-| 0.040 | `[17, 40, 50]` | `[13, 20, 20]` | `[34, 41, 50]` |
-
 ## Repository structure
 
 ```text
