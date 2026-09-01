@@ -104,12 +104,21 @@ def _string_bits(*strings: Iterable[bytes]) -> int:
 
 
 @torch.no_grad()
-def entropy_coded_inference(i_model, p_model, image_chw: np.ndarray, qp: int, device: torch.device):
+def entropy_coded_inference(
+    i_model,
+    p_model,
+    image_chw: np.ndarray,
+    qp: int,
+    device: torch.device,
+    group_size: int = GROUP_SIZE,
+):
     image = torch.as_tensor(image_chw, dtype=torch.float32, device=device)
     if image.ndim != 3 or image.shape[0] < 1:
         raise ValueError(f"Expected non-empty CHW image, got {tuple(image.shape)}")
     if not 0 <= qp <= 63:
         raise ValueError("qp must be in [0, 63] for entropy-coded inference; choose a concrete QP.")
+    if group_size < 1:
+        raise ValueError("group_size must be at least 1.")
     padded, pad_h, pad_w = pad_spatial(image.unsqueeze(0), 16)
     channels, original_h, original_w = image.shape
     reconstructions = []
@@ -120,8 +129,8 @@ def entropy_coded_inference(i_model, p_model, image_chw: np.ndarray, qp: int, de
     i_model.update()
     p_model.update()
 
-    for start in range(0, channels, GROUP_SIZE):
-        stop = min(start + GROUP_SIZE, channels)
+    for start in range(0, channels, group_size):
+        stop = min(start + group_size, channels)
         feature = None
         for local_index, channel_index in enumerate(range(start, stop)):
             frame = padded[:, channel_index:channel_index + 1]

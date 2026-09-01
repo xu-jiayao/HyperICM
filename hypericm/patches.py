@@ -42,6 +42,9 @@ class HyperspectralPatchDataset(Dataset):
         ratio = 1024.0 / max(height, width)
         gsd = self.spec.base_gsd / ratio
         with torch.no_grad():
-            features = self.feature_extractor.extract(tensor, gsd, self.spec.wavelengths)
-        features = [feature.squeeze(0).detach().cpu() for feature in features]
+            extract = getattr(self.feature_extractor, "extract", self.feature_extractor)
+            features = extract(tensor, gsd, self.spec.wavelengths)
+        # Keep Hyperfree's singleton model batch dimension. ``DataLoader`` adds
+        # the patch batch dimension, matching the legacy training loss shape.
+        features = [feature.detach().cpu() for feature in features]
         return tensor, features, float(gsd), str(path)
