@@ -13,15 +13,6 @@ Hyperspectral images contain hundreds of strongly correlated spectral bands and 
 1. **Offline rate-distortion pretraining.** Adjacent spectral bands are divided into groups and encoded sequentially. Each band is conditioned on features from previously reconstructed bands, allowing the codec to exploit inter-band dependencies. A hyperprior entropy model and learnable QP-dependent rate-control vectors provide practical compression and variable-rate operation.
 2. **Semantic-guided online adaptation.** For each target image, only the encoder is fine-tuned while the decoder remains fixed. Multi-layer HyperFree feature consistency between the original and reconstructed hyperspectral images provides task-agnostic semantic supervision without downstream labels or extra model-transmission cost.
 
-The corresponding objectives are:
-
-```text
-L_offline = R + lambda * D_MSE(X, X_hat)
-L_online  = alpha * R + beta * sum_l ||phi_l(X_hat) - phi_l(X)||_2^2
-```
-
-This repository contains the online encoder-adaptation and entropy-coded inference paths used for the paper experiments. The offline-pretrained codec is provided as an external checkpoint.
-
 ## Main results
 
 The paper evaluates HyperICM on three WHU-Hi datasets over approximately 0.005–0.04 bits per spectral pixel (BPSP). Relative to JPEG 2000, semantic-guided online adaptation achieves the following OA-oriented BD-Rate reductions:
