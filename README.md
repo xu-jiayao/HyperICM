@@ -64,8 +64,6 @@ conda env create -f requirement.yaml
 conda activate hypericm
 ```
 
-The provided environment targets Python 3.10, PyTorch 2.1, torchvision 0.16, and CUDA 12.1. For a different CUDA version or CPU-only execution, install a compatible PyTorch/torchvision pair and adjust `requirement.yaml`. The codec and HyperFree paths are GPU-oriented.
-
 ## Checkpoints
 
 Download the pretrained weights from **[Google Drive](https://drive.google.com/open?id=1asrxOPqvi2K9d3jzegpYri7XX2mIsseC)** and place them in `checkpoints/`:
@@ -94,18 +92,7 @@ The exact wavelengths used in the experiments are defined in `hypericm/datasets.
 
 Run `python train.py --help` for the complete command-line interface. Configuration files are optional; provide one with `--config PATH`, or pass the required dataset, patch, checkpoint, device, optimization, and evaluation options directly.
 
-`--loss-weights` represents the implementation-specific tuple `[semantic, MSE, rate, global_scale]`; it is not a direct transcription of the paper's symbolic `[alpha, beta]` pair. `--para` is retained as a compatibility alias, and `--qp 0` samples a concrete QP for each batch. Add `--full-image PATH` for periodic codec evaluation and `--run-downstream --ground-truth PATH` for few-shot semantic-segmentation evaluation.
-
 ## Inference
-
-Entropy-coded reconstruction:
-
-```bash
-python inference.py \
-  --input /path/to/WHU-Hi-LongKou.tif \
-  --checkpoint checkpoints/Ep10-dev0.076-0.000870-qprandom.pth \
-  --qps 1 21 63 --device cuda:0 --output-dir results
-```
 
 Reconstruction with HyperFree downstream evaluation:
 
@@ -118,14 +105,6 @@ python inference.py \
   --hyperfree-checkpoint checkpoints/HyperFree-b.pth
 ```
 
-For each QP, `<output-dir>/<input-stem>/` contains the reconstructed array, `metrics.csv`, and `run.json`; downstream mode additionally writes a semantic-segmentation GeoTIFF. The saved `.npy` reconstruction remains in min-max-normalized units; the original minimum and maximum are recorded in `run.json` but are not reapplied automatically. Reported BPSP counts the `y`/`z` entropy payload bytes divided by the number of spatial pixels and spectral bands; container and side metadata are not included.
-
-## Implementation notes
-
-- Spectral bands are processed in fixed groups of eight, with a guard for a shorter final group.
-- Spatial dimensions are padded to multiples of 16 and cropped back after decoding.
-- Online adaptation updates only the I-frame `enc` and P-frame `encoder` modules.
-- Inference uses actual CompressAI entropy streams; its entropy-payload BPSP differs from the likelihood-based rate surrogate used during optimization.
 
 ## Citation
 
@@ -152,10 +131,4 @@ HyperICM uses [HyperFree](https://doi.org/10.1109/CVPR52734.2025.02146) as its t
   pages     = {23048--23058},
   doi       = {10.1109/CVPR52734.2025.02146}
 }
-```
-
-## Acknowledgments and third-party notices
-
-The downstream foundation model is based on the official [HyperFree project](https://github.com/Jingtao-Li-CVer/HyperFree). This repository does not currently grant a repository-wide license; verify and preserve all applicable upstream licenses before redistribution.
-
-This work was supported in part by the Major Key Project of PCL (`PCL2024A04`), the Interdisciplinary Frontier Research Project of PCL (`PCL2025QYB013`), and the Guangdong Basic and Applied Basic Research Foundation (`2024A1515010454`).
+``
